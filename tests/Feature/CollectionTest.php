@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Data\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -32,5 +33,68 @@ class CollectionTest extends TestCase
         $result = $collection->pop();
         $this->assertEquals(3, $result);
         $this->assertEqualsCanonicalizing([1,2], $collection->all());
+    }
+
+    public function testMap()
+    {
+        $collection = collect([1,2,3]);
+        $result = $collection->map(function ($item){
+            return $item * 2;
+        });
+
+        $this->assertEqualsCanonicalizing([2,4,6], $result->all());
+    }
+
+    public function testMapInto()
+    {
+        $collection = collect(['Hanif']);
+        $result = $collection->mapInto(Person::class);
+        $this->assertEquals([new Person('Hanif')], $result->all());
+    }
+
+    public function testMapSpread()
+    {
+        $collection = collect([
+            ['Hanif', 'Ganteng'],
+            ['Roihan', 'Pintar']
+        ]);
+        $result = $collection->mapSpread(function ($firstname, $lastname) {
+            $fullname = $firstname . ' ' . $lastname;
+            return new Person($fullname);
+        });
+
+        $this->assertEquals([
+            new Person('Hanif Ganteng'),
+            new Person('Roihan Pintar')
+            ], $result->all());
+    }
+
+    public function testMapToGroups()
+    {
+        $collection = collect([
+            [
+                'name' => 'Hanif',
+                'departement' => 'IT'
+            ],
+            [
+                'name' => 'Roihan',
+                'departement' => 'IT'
+            ],
+            [
+                'name' => 'Yogi',
+                'departement' => 'HR'
+            ]
+        ]);
+
+        $result = $collection->mapToGroups(function  ($item) {
+            return[
+                $item['departement'] => $item['name']
+            ];
+        });
+
+        $this->assertEquals([
+            'IT' => collect(['Hanif', 'Roihan']),
+            'HR' => collect(['Yogi'])
+        ], $result->all());
     }
 }
