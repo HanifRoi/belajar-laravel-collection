@@ -21,4 +21,16 @@ class CollectionTest extends TestCase
             $this->assertEquals($key + 1, $value);
         }
     }
+
+    public function testCrud()
+    {
+        $collection = collect([]);
+        $collection->push(1,2,3);
+        $this->assertEquals([1,2,3],$collection->all());
+
+
+        $result = $collection->pop();
+        $this->assertEquals(3, $result);
+        $this->assertEqualsCanonicalizing([1,2], $collection->all());
+    }
 }
