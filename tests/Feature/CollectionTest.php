@@ -7,6 +7,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertEqualsCanonicalizing;
+
 class CollectionTest extends TestCase
 {
     public function testCreateCollection()
@@ -133,5 +136,54 @@ class CollectionTest extends TestCase
             'name' => 'Hanif',
             'country' => 'Indonesia'
         ], $collection3->all());
+    }
+
+    public function testCollapse()
+    {
+        $collection = collect([
+            [1,2,3],
+            [4,5,6],
+            [7,8,9]
+        ]);
+
+        $result = $collection->collapse();
+        assertEqualsCanonicalizing([1,2,3,4,5,6,7,8,9], $result->all());
+    }
+
+    public function testFlatMap()
+    {
+        $collection = collect([
+            [
+                'name'=> 'Hanif',
+                'hobbies'=>['Coding', 'Gaming']
+            ],
+             [
+                'name'=> 'Roihan',
+                'hobbies'=>['Coding', 'Gaming']
+            ]
+        ]);
+
+        $hobbies = $collection->flatMap(function($item){
+            return $item['hobbies'];
+        });
+
+        $this->assertEquals(['Coding', 'Gaming', 'Coding', 'Gaming'], $hobbies->all());
+    }
+
+    public function testPluck()
+    {
+         $collection = collect([
+            [
+                'name'=> 'Hanif',
+                'hobbies'=>['Coding', 'Gaming']
+            ],
+             [
+                'name'=> 'Roihan',
+                'hobbies'=>['Coding', 'Gaming']
+            ]
+        ]);
+
+        $name = $collection->pluck('name');
+        $this->assertEquals(['Hanif', 'Roihan'], $name->all());
     }
 }
