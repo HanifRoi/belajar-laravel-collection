@@ -250,5 +250,73 @@ class CollectionTest extends TestCase
     {
         $collection = collect(['Hanif', 'Ganteng', 'Roihan']);
         self::assertTrue($collection->contains('Roihan'));
+        self::assertTrue($collection->contains(function ($value, $key) {
+            return $value == 'Roihan';
+        }));
     }
+
+    public function testGrouping()
+    {
+        $collection = collect([
+            [
+                'name'=>'Hanif',
+                'departement'=>'IT'
+            ],
+             [
+                'name'=>'Roihan',
+                'departement'=>'IT'
+            ],
+             [
+                'name'=>'Budi',
+                'departement'=>'HR'
+            ]
+
+        ]);
+
+        $result = $collection->groupBy('departement');
+
+        assertEquals([
+            'IT'=> collect([
+                [
+                    'name'=>'Hanif',
+                    'departement'=>'IT'
+                ],
+                [
+                    'name'=>'Roihan',
+                    'departement'=>'IT'
+                ]
+            ]),
+            'HR'=>collect([
+                [
+                    'name'=>'Budi',
+                    'departement'=>'HR'
+                ]
+            ])
+        ], $result->all());
+
+
+        $result = $collection->groupBy(function ($value, $key) {
+            return strtolower($value['departement']);
+        });
+         assertEquals([
+            'it'=> collect([
+                [
+                    'name'=>'Hanif',
+                    'departement'=>'IT'
+                ],
+                [
+                    'name'=>'Roihan',
+                    'departement'=>'IT'
+                ]
+            ]),
+            'hr'=>collect([
+                [
+                    'name'=>'Budi',
+                    'departement'=>'HR'
+                ]
+            ])
+        ], $result->all());
+    }
+
+
 }
