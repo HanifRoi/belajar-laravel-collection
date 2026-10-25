@@ -462,6 +462,25 @@ class CollectionTest extends TestCase
         assertEquals(9, $result);
     }
 
+    public function testReduce()
+    {
+        $collection = collect([1,2,3,4,5,6,7,8,9]);
+
+        $result = $collection->reduce(function($carry, $item){
+            return $carry + $item;
+        });
+
+        assertEquals(45, $result);
+
+        //reduce 1 (1,2) = 3
+        // reduce 2 (3,3) = 6
+        // reduce 3 (6, 4) = 10
+        // reduce 4 (10, 5) = 15
+
+    }
+
+
+
 
 
 
