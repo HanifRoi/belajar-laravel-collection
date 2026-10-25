@@ -186,4 +186,13 @@ class CollectionTest extends TestCase
         $name = $collection->pluck('name');
         $this->assertEquals(['Hanif', 'Roihan'], $name->all());
     }
+
+    public function testJoin()
+    {
+        $collection = collect(['Hanif', 'Roihan', 'Ganteng', 'Banget']);
+
+        assertEquals('Hanif-Roihan-Ganteng-Banget', $collection->join('-'));
+
+        assertEquals('Hanif-Roihan-Ganteng_Banget', $collection->join('-', '_'));
+    }
 }
