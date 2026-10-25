@@ -9,6 +9,7 @@ use Tests\TestCase;
 
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertEqualsCanonicalizing;
+use function PHPUnit\Framework\assertEqualsWithDelta;
 
 class CollectionTest extends TestCase
 {
@@ -441,7 +442,24 @@ class CollectionTest extends TestCase
         assertEqualsCanonicalizing([1,2,3,4,5,6,7,8,9], $result->all());
         
         $result = $collection->sortDesc();
-        assertEqualsCanonicalizing([9,8,7,6,5,4,3,2,1], $result->all())
+        assertEqualsCanonicalizing([9,8,7,6,5,4,3,2,1], $result->all());
+    }
+
+    public function testAggregate()
+    {
+        $collection = collect([1,2,3,4,5,6,7,8,9]);
+
+        $result = $collection->sum();
+        assertEquals(45, $result);
+
+        $result = $collection->average();
+        assertEquals(5, $result);
+
+        $result = $collection->min();
+        assertEquals(1, $result);
+
+        $result = $collection->max();
+        assertEquals(9, $result);
     }
 
 
