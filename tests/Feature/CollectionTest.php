@@ -245,4 +245,10 @@ class CollectionTest extends TestCase
             'Budi'=>80
         ], $result2->all());
     }
+
+    public function testTesting()
+    {
+        $collection = collect(['Hanif', 'Ganteng', 'Roihan']);
+        self::assertTrue($collection->contains('Roihan'));
+    }
 }
